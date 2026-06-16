@@ -1,6 +1,6 @@
 # QueryMind — Ask Your Data Anything
 
-**Live Demo:** [https://querymind.vercel.app](https://querymind.vercel.app) &nbsp;|&nbsp; **Backend API:** [https://querymind-backend.onrender.com](https://querymind-backend.onrender.com/health)
+**Live Demo:** [https://querymind-iota.vercel.app](https://querymind-iota.vercel.app) &nbsp;|&nbsp; **Backend API:** [https://querymind-jh2e.onrender.com](https://querymind-jh2e.onrender.com/health)
 
 QueryMind is an AI-powered Text-to-SQL analytics tool. Upload any CSV file, ask questions in plain English, and get SQL queries, interactive charts, and business insights — instantly. No SQL knowledge required.
 
