@@ -1,0 +1,32 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Env files — never commit real keys
+.env
+backend/.env
+querymind-insights-main/.env
+querymind-insights-main/.env.local
+querymind-insights-main/.env.production
+
+# Node
+querymind-insights-main/node_modules/
+querymind-insights-main/.output/
+querymind-insights-main/dist/
+querymind-insights-main/.vercel/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+server_out.log
+server_err.log
+
+# Zip downloads from Lovable
+*.zip
