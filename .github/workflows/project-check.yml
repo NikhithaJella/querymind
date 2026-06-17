@@ -1,0 +1,78 @@
+name: Project Structure Check
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  check-structure:
+    name: Verify required files exist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check backend core files
+        run: |
+          files=(
+            "backend/main.py"
+            "backend/security.py"
+            "backend/requirements.txt"
+            "backend/db_duckdb.py"
+            "backend/cache.py"
+            "backend/agent/sql_agent.py"
+            "backend/agent/memory.py"
+            "backend/insights/profiler.py"
+            "backend/insights/narrative.py"
+            "backend/insights/anomaly.py"
+            "backend/insights/chart.py"
+            "backend/retrieval/web_rag.py"
+          )
+          missing=0
+          for f in "${files[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              missing=1
+            else
+              echo "OK: $f"
+            fi
+          done
+          exit $missing
+
+      - name: Check frontend core files
+        run: |
+          files=(
+            "querymind-insights-main/package.json"
+            "querymind-insights-main/src/routes/index.tsx"
+            "querymind-insights-main/src/lib/api.ts"
+          )
+          missing=0
+          for f in "${files[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              missing=1
+            else
+              echo "OK: $f"
+            fi
+          done
+          exit $missing
+
+      - name: Check documentation
+        run: |
+          files=(
+            "docs/ARCHITECTURE.md"
+            "docs/AI_IMPLEMENTATION.md"
+            "tests/README.md"
+            "README.md"
+          )
+          missing=0
+          for f in "${files[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"
+              missing=1
+            else
+              echo "OK: $f"
+            fi
+          done
+          exit $missing
