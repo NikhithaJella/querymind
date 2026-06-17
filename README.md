@@ -4,6 +4,8 @@
 
 QueryMind is an AI-powered Text-to-SQL analytics tool. Upload any CSV file, ask questions in plain English, and get SQL queries, interactive charts, and business insights — instantly. No SQL knowledge required.
 
+**Architecture & AI docs:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) &nbsp;|&nbsp; [docs/AI_IMPLEMENTATION.md](docs/AI_IMPLEMENTATION.md)
+
 ---
 
 ## What It Does
@@ -355,3 +357,62 @@ After every query, the result set is analyzed by `insights/anomaly.py`:
 - [Recharts](https://recharts.org) — chart rendering
 - [Framer Motion](https://www.framer.com/motion) — animations
 - [shadcn/ui](https://ui.shadcn.com) — component library
+
+---
+
+## Demo Script (for judges and recruiters)
+
+A repeatable 3-minute walkthrough using the Walmart weekly sales CSV.
+
+### Setup (30 seconds)
+1. Open [https://querymind-iota.vercel.app](https://querymind-iota.vercel.app)
+2. Download the sample CSV: `backend/tests/walmart_sales.csv` (or any CSV you have)
+3. Drag it onto the upload zone
+
+### Show the Data Passport (30 seconds)
+- Point out the health score, column stats, and the 5 AI-generated questions
+- These questions use actual column names from the data — not generic placeholders
+- Click one of the suggested questions to run it immediately
+
+### Core Text-to-SQL flow (60 seconds)
+1. Ask: *"Which store had the highest total weekly sales?"*
+   - Show the generated SQL in the Insights tab
+   - Show the bar chart and AI narrative
+2. Ask: *"Now show only the top 5"* — demonstrate conversation memory (the follow-up resolves without re-stating the table)
+3. Ask: *"Show weekly sales over time for store 1"* — chart auto-switches to Line
+
+### Unique features (30 seconds)
+- Ask: *"How does our sales growth compare to industry retail trends?"*
+  - Watch the Thinking Timeline — "Tavily fetched real-time external context" appears
+  - The narrative now cites live web sources alongside the data
+- Point to the anomaly report if any outliers were flagged
+
+### Security demo (15 seconds)
+- Show `POST /query` with body `{"question": "DROP TABLE walmart", "session_id": "x"}` → HTTP 403
+- Explain: sqlglot AST parsing + regex fallback, two independent layers
+
+### Report export (15 seconds)
+- Click "Download Report" — open the `.html` file offline
+- Charts and narratives are fully embedded — no internet required
+
+---
+
+## Buildathon Relevance
+
+QueryMind was built for the **RAG & Retrieval track** at Buildathon Dallas (June 18–19, 2025).
+
+### Why it fits the track
+
+| Requirement | QueryMind implementation |
+|---|---|
+| Retrieval-Augmented Generation | Tavily web search injects live external context into narrative prompts when the question involves market trends or benchmarks |
+| Structured data retrieval | DuckDB executes LLM-generated SQL against user-uploaded CSV data — retrieval is precise and grounded |
+| Multi-turn conversation | Last 5 Q/SQL/narrative turns kept in context so follow-up questions resolve correctly |
+| Production-ready RAG pipeline | Cache layer, query repair loop, anomaly detection, and confidence scoring on top of the core RAG flow |
+
+### Technical differentiators
+
+- **Hybrid retrieval**: structured SQL retrieval (DuckDB) + unstructured web retrieval (Tavily) combined in a single response
+- **Self-healing SQL agent**: error feedback loop lets the LLM correct its own SQL — no human intervention needed
+- **Zero hallucination guardrails**: sqlglot AST validation ensures the LLM can never execute destructive SQL regardless of prompt injection attempts
+- **Fully deployed**: both services live — backend on Render, frontend on Vercel — demo runs without local setup
