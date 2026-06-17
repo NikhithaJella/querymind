@@ -24,6 +24,7 @@ app.add_middleware(
 
 @app.get("/health")
 def health():
+    """Liveness probe — used by Render and the smoke test checklist."""
     return {"status": "ok"}
 
 
@@ -34,6 +35,11 @@ async def upload(
     file: UploadFile = File(...),
     session_id: str = Form("default"),
 ):
+    """Load a CSV into a per-session DuckDB table and return a Data Passport.
+
+    Runs the profiler (column stats + Groq dataset classification) after loading.
+    Clears the query cache so stale answers from a previous upload are not served.
+    """
     if not file.filename.lower().endswith(".csv"):
         raise HTTPException(status_code=400, detail="Only CSV files are supported.")
 
@@ -81,6 +87,12 @@ class QueryRequest(BaseModel):
 
 @app.post("/query")
 def query(req: QueryRequest):
+    """Translate a natural-language question to SQL, execute it, and return enriched results.
+
+    Pipeline (cache miss only): web RAG check → SQL generation with self-healing retry loop →
+    SQL validation (security.py) → DuckDB execution → anomaly detection → chart selection →
+    Groq narrative. Cache hit returns instantly with no AI or DB calls.
+    """
     if not req.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
 
